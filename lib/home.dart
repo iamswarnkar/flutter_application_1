@@ -56,7 +56,7 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
             ),
 
             Text(
-              '₹$convertedValue',
+              '₹${convertedValue != 0 ? convertedValue.toStringAsFixed(2) : convertedValue.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: 36,
                 fontWeight: FontWeight.bold,
@@ -89,10 +89,29 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    convertedValue =
-                        double.parse(textEditingController.text) * 81;
-                  });
+                  try {
+                    double.parse(textEditingController.text);
+                    setState(() {
+                      convertedValue =
+                          double.parse(textEditingController.text) * 81;
+                    });
+                  } catch (e) {
+                    showDialog(
+                      context: context,
+                      builder:
+                          (context) => AlertDialog(
+                            title: Text('Invalid Input'),
+                            content: Text('Please enter a valid number.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('OK'),
+                              ),
+                            ],
+                          ),
+                    );
+                    return;
+                  }
                 },
 
                 style: ElevatedButton.styleFrom(
